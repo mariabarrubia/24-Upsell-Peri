@@ -11,11 +11,14 @@
     <script src="https://cdn.tailwindcss.com" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap');
         body {
             font-family: 'Inter', Arial, sans-serif;
-            background-color: #f8fafc;
+            background-color: #faf8f6;
             color: #0f172a;
+        }
+        .font-display {
+            font-family: 'Playfair Display', 'Inter', serif;
         }
         .cta-red {
             background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
@@ -27,6 +30,30 @@
         .cta-red:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 28px rgba(220, 38, 38, 0.45);
+        }
+        .cta-warm {
+            background: linear-gradient(180deg, #c94b4b 0%, #a03232 100%);
+            color: #fff;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px rgba(180, 60, 60, 0.4);
+            border: 2px solid #8b2525;
+            letter-spacing: 0.02em;
+        }
+        .cta-warm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(180, 60, 60, 0.5);
+        }
+        .cta-muted {
+            background: linear-gradient(180deg, #5a5560 0%, #3d3842 100%);
+            color: #e2e0e4;
+            transition: all 0.25s ease;
+            box-shadow: 0 6px 16px rgba(60, 55, 65, 0.3);
+            border: 2px solid #4a4550;
+            letter-spacing: 0.02em;
+        }
+        .cta-muted:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(60, 55, 65, 0.4);
         }
         .price-slash {
             position: relative;
@@ -54,12 +81,171 @@
         }
         .bold-line {
             height: 3px;
-            background: linear-gradient(90deg, transparent, #1e40af, transparent);
+            background: linear-gradient(90deg, transparent, #c4a7a0, #1e40af, #c4a7a0, transparent);
             border: none;
             margin: 1.5rem 0;
         }
+        /* Pricing scroll container */
+        .pricing-scroll-container {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+            padding: 0.5rem 0.25rem 1rem 0.25rem;
+            margin: 0 -0.25rem;
+        }
+        .pricing-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+        .pricing-scroll-container {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .pricing-card {
+            flex: 0 0 auto;
+            scroll-snap-align: center;
+            border-radius: 1.5rem;
+            padding: 1.5rem 1.25rem 1.5rem 1.25rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        /* Mobile card sizing */
+        @media (max-width: 767px) {
+            .pricing-card {
+                width: 82vw;
+                min-width: 280px;
+                max-width: 340px;
+            }
+            .pricing-scroll-container {
+                padding-left: calc((100vw - 82vw) / 2 - 0.5rem);
+                padding-right: calc((100vw - 82vw) / 2 - 0.5rem);
+                scroll-padding-left: calc((100vw - 82vw) / 2 - 0.5rem);
+                scroll-padding-right: calc((100vw - 82vw) / 2 - 0.5rem);
+            }
+        }
+        @media (min-width: 768px) {
+            .pricing-scroll-container {
+                overflow-x: visible;
+                scroll-snap-type: none;
+                gap: 1.5rem;
+                padding: 0;
+                margin: 0;
+            }
+            .pricing-card {
+                flex: 1 1 0%;
+                width: auto;
+                min-width: 0;
+                max-width: none;
+                scroll-snap-align: none;
+                padding: 2rem 1.75rem 2rem 1.75rem;
+            }
+        }
+        /* Card-specific styling */
+        .decoy-card {
+            background: linear-gradient(175deg, #3b3645 0%, #2d2935 40%, #25222b 100%);
+            border: 2px solid #4a4455;
+            box-shadow: 0 8px 32px rgba(30, 28, 36, 0.45);
+        }
+        .recommended-card {
+            background: linear-gradient(175deg, #3d262b 0%, #311d22 35%, #26171b 100%);
+            border: 2px solid #c97a6a;
+            box-shadow: 0 8px 36px rgba(160, 60, 50, 0.35), 0 0 0 1px rgba(200, 120, 100, 0.25);
+            position: relative;
+        }
+        .recommended-card::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 1.6rem;
+            padding: 3px;
+            background: linear-gradient(145deg, #e8a090, #c97a6a, #a85545, #c97a6a, #e8a090);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .recommended-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        /* Watercolor flower SVG container */
+        .flower-illustration {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        .flower-illustration svg {
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
+        }
+        /* AI cute icon */
+        .ai-cute-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .ai-cute-icon svg {
+            filter: drop-shadow(0 2px 4px rgba(120, 80, 180, 0.35));
+        }
+        /* Badge */
+        .badge-recommended {
+            display: inline-block;
+            background: linear-gradient(135deg, #f0c5b8, #e8a090);
+            color: #5c1a14;
+            font-weight: 700;
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.35rem 1rem;
+            border-radius: 9999px;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 8px rgba(180, 100, 80, 0.35);
+            position: relative;
+            z-index: 3;
+        }
+        /* Smooth section transitions */
+        .section-fade {
+            animation: gentleFadeIn 0.6s ease forwards;
+        }
+        @keyframes gentleFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Subtle watercolor splatter behind flowers */
+        .watercolor-splatter {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(18px);
+        }
+        /* Guarantee section warmth */
+        .guarantee-warm {
+            background: linear-gradient(135deg, #fef9f7, #fdf3ef, #fef9f7);
+            border-radius: 1.25rem;
+        }
     </style>
-<base target="_blank">
+    <base target="_blank">
 </head>
 <body class="antialiased">
 
@@ -70,7 +256,7 @@
     <div class="max-w-2xl mx-auto px-4 py-10 md:py-14">
 
         <!-- Order Confirmed -->
-        <div class="text-center mb-8">
+        <div class="text-center mb-8 section-fade">
             <span class="inline-block bg-green-100 text-green-800 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide mb-4">
                 <i class="fas fa-check-circle mr-1"></i> Order Confirmed
             </span>
@@ -85,7 +271,7 @@
         <hr class="bold-line">
 
         <!-- The Gap -->
-        <div class="mb-8">
+        <div class="mb-8 section-fade">
             <p class="font-bold text-lg mb-4 text-slate-900">The Book is Powerful. But it requires two things perimenopause actively steals from you:</p>
             <div class="space-y-3 text-slate-700 font-medium">
                 <div class="flex items-start bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
@@ -102,7 +288,7 @@
         <hr class="bold-line">
 
         <!-- The Stack -->
-        <div class="mb-8">
+        <div class="mb-8 section-fade">
             <h2 class="text-center font-bold text-xl text-slate-900 mb-6 uppercase tracking-wide">
                 YOU'LL RECEIVE EVERYTHING TOGETHER – LIFETIME ACCESS
             </h2>
@@ -120,82 +306,247 @@
                         Your browser does not support the audio element.
                     </audio>
                 </div>
-                <ul class="text-sm text-slate-700 space-y-2 font-medium">
-                    <li class="flex items-start"><i class="fas fa-headphones text-blue-500 mr-2 mt-1"></i> The complete system, narrated start-to-finish.</li>
-                    <li class="flex items-start"><i class="fas fa-shield-alt text-blue-500 mr-2 mt-1"></i> Listen via headphones — zero disclosure risk, zero screen fatigue</li>
-                    <li class="flex items-start"><i class="fas fa-brain text-blue-500 mr-2 mt-1"></i> Zero reading load. Zero screen fatigue. Reinforce protocols on autopilot.</li>
-                    <li class="flex items-start"><i class="fas fa-moon text-blue-500 mr-2 mt-1"></i> Perfect for insomnia nights, commutes, and recovery walks.</li>
-                </ul>
             </div>
 
             <!-- AI Expert -->
-            <div class="bg-white rounded-xl border-l-4 border-purple-600 shadow-md p-5 mb-4">
+            <div class="bg-white rounded-xl border-l-4 border-purple-600 shadow-md p-5 mb-4 relative">
                 <div class="flex justify-between items-start mb-3">
-                    <h3 class="font-bold text-lg text-purple-900">The Perimenopause AI Expert</h3>
+                    <div class="flex items-center gap-2">
+                        <!-- Cute Smiling AI Expert Icon -->
+                        <div class="ai-cute-icon" title="Your AI Perimenopause Expert">
+                            <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Outer glow ring -->
+                                <circle cx="22" cy="22" r="21" fill="url(#aiGradientOuter)" stroke="url(#aiStrokeGrad)" stroke-width="2.5"/>
+                                <!-- Face circle -->
+                                <circle cx="22" cy="22" r="17" fill="url(#aiGradientFace)"/>
+                                <!-- Left eye -->
+                                <circle cx="16" cy="19" r="3.5" fill="#1e1b4b"/>
+                                <circle cx="17" cy="17.5" r="1.2" fill="#ffffff" opacity="0.8"/>
+                                <!-- Right eye -->
+                                <circle cx="28" cy="19" r="3.5" fill="#1e1b4b"/>
+                                <circle cx="29" cy="17.5" r="1.2" fill="#ffffff" opacity="0.8"/>
+                                <!-- Rosy cheeks -->
+                                <ellipse cx="12.5" cy="25" rx="4" ry="2.8" fill="#f9a8d4" opacity="0.45"/>
+                                <ellipse cx="31.5" cy="25" rx="4" ry="2.8" fill="#f9a8d4" opacity="0.45"/>
+                                <!-- Smile -->
+                                <path d="M17 28.5 Q22 34 28 28.5" stroke="#1e1b4b" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                <!-- Tiny tech headpiece -->
+                                <rect x="18.5" y="3.5" width="7" height="4" rx="2" fill="url(#aiGradientOuter)" stroke="#7c5cbf" stroke-width="1.2"/>
+                                <circle cx="22" cy="5.5" r="1.8" fill="#fde68a" stroke="#d4a017" stroke-width="0.8"/>
+                                <defs>
+                                    <radialGradient id="aiGradientOuter" cx="50%" cy="40%" r="50%">
+                                        <stop offset="0%" stop-color="#c4b5fd"/>
+                                        <stop offset="100%" stop-color="#7c3aed"/>
+                                    </radialGradient>
+                                    <radialGradient id="aiGradientFace" cx="45%" cy="35%" r="55%">
+                                        <stop offset="0%" stop-color="#f5f0ff"/>
+                                        <stop offset="60%" stop-color="#ede0ff"/>
+                                        <stop offset="100%" stop-color="#d8c9f0"/>
+                                    </radialGradient>
+                                    <linearGradient id="aiStrokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#a78bfa"/>
+                                        <stop offset="100%" stop-color="#6d28d9"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <h3 class="font-bold text-lg text-purple-900">The Perimenopause AI Expert</h3>
+                    </div>
                     <span class="text-slate-400 font-bold text-lg price-slash">$97.99</span>
                 </div>
-                <p class="text-sm text-slate-800 font-semibold mb-3">A Personal Expert That Never Sleeps. (accessible within ChatGPT)</p>
-                <ul class="text-sm text-slate-700 space-y-2 font-medium">
-                    <li class="flex items-start"><i class="fas fa-robot text-purple-500 mr-2 mt-1"></i> Custom Ai expert in Perimenopause for instant answers when it's urgent.</li>
-                    <li class="flex items-start"><i class="fas fa-bolt text-purple-500 mr-2 mt-1"></i> Ask anything. Get the exact tactical answer in 10 seconds.</li>
-                    <li class="flex items-start"><i class="fas fa-comments text-purple-500 mr-2 mt-1"></i> "Draft me a non-disclosure scope email." "I'm spiraling. Walk me through the reset."</li>
-                    <li class="flex items-start"><i class="fas fa-clock text-purple-500 mr-2 mt-1"></i> 24/7 availability. No appointments. No waiting. No employer involvement.</li>
-                </ul>
+                <p class="text-sm text-slate-800 font-semibold mb-0">A Custom Ai Perimenopause Expert for instant answers when it matters most (accessible within ChatGPT).</p>
             </div>
         </div>
 
         <hr class="bold-line">
 
-        <!-- Ecosystem -->
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8 text-center">
-            <p class="text-blue-900 font-bold text-sm md:text-base">
-                <i class="fas fa-layer-group text-blue-600 mr-2"></i>
-                Ebook (reference) + Audiobook (reinforcement) + AI (crisis support) = Complete Coverage.
+        <!-- Price & CTA: Horizontally Scrollable Pricing Cards -->
+        <div class="mb-8 section-fade">
+            <!-- Section label -->
+            <p class="text-center text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Choose Your Upgrade</p>
+
+            <!-- Scrollable pricing container -->
+            <div class="pricing-scroll-container" id="pricingScrollContainer">
+
+                <!-- Decoy Card: Audiobook Only -->
+                <div class="pricing-card decoy-card">
+                    <!-- Hand-painted Cherry Blossom 🌸 -->
+                    <div class="flower-illustration">
+                        <svg width="70" height="62" viewBox="0 0 70 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Subtle watercolor splatter behind -->
+                            <ellipse cx="34" cy="30" rx="28" ry="24" fill="#f9a8d4" opacity="0.18" filter="blur(6px)"/>
+                            <!-- Stem -->
+                            <path d="M34 56 Q32 44 34 34" stroke="#8b9a6b" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+                            <!-- Tiny leaf -->
+                            <path d="M34 42 Q42 38 44 34" stroke="#8b9a6b" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+                            <!-- Petal 1 - top -->
+                            <ellipse cx="34" cy="13" rx="8" ry="12" fill="#fbcfe8" opacity="0.85" transform="rotate(0 34 13)"/>
+                            <ellipse cx="34" cy="13" rx="6" ry="9" fill="#f9a8d4" opacity="0.7" transform="rotate(0 34 13)"/>
+                            <!-- Petal 2 - top-right -->
+                            <ellipse cx="45" cy="19" rx="8" ry="12" fill="#fbcfe8" opacity="0.8" transform="rotate(72 45 19)"/>
+                            <ellipse cx="45" cy="19" rx="6" ry="9" fill="#f9a8d4" opacity="0.65" transform="rotate(72 45 19)"/>
+                            <!-- Petal 3 - bottom-right -->
+                            <ellipse cx="42" cy="33" rx="8" ry="12" fill="#fce7f3" opacity="0.82" transform="rotate(144 42 33)"/>
+                            <ellipse cx="42" cy="33" rx="6" ry="9" fill="#f9a8d4" opacity="0.68" transform="rotate(144 42 33)"/>
+                            <!-- Petal 4 - bottom-left -->
+                            <ellipse cx="25" cy="33" rx="8" ry="12" fill="#fce7f3" opacity="0.8" transform="rotate(216 25 33)"/>
+                            <ellipse cx="25" cy="33" rx="6" ry="9" fill="#f9a8d4" opacity="0.65" transform="rotate(216 25 33)"/>
+                            <!-- Petal 5 - top-left -->
+                            <ellipse cx="22" cy="19" rx="8" ry="12" fill="#fbcfe8" opacity="0.83" transform="rotate(288 22 19)"/>
+                            <ellipse cx="22" cy="19" rx="6" ry="9" fill="#f9a8d4" opacity="0.7" transform="rotate(288 22 19)"/>
+                            <!-- Center -->
+                            <circle cx="34" cy="23" r="4.5" fill="#fde68a" opacity="0.9"/>
+                            <circle cx="34" cy="23" r="2.5" fill="#f59e0b" opacity="0.7"/>
+                            <!-- Tiny center dots -->
+                            <circle cx="33" cy="22" r="0.8" fill="#b45309" opacity="0.5"/>
+                            <circle cx="35.5" cy="23.5" r="0.7" fill="#b45309" opacity="0.5"/>
+                            <circle cx="34" cy="24.5" r="0.6" fill="#b45309" opacity="0.4"/>
+                            <!-- Hand-painted edge strokes on petals -->
+                            <path d="M34 3 Q32 8 34 13 Q36 8 34 3" stroke="#e8a0c0" stroke-width="0.8" fill="none" opacity="0.5"/>
+                            <path d="M50 14 Q48 18 45 19 Q48 24 50 28" stroke="#e8a0c0" stroke-width="0.8" fill="none" opacity="0.45"/>
+                        </svg>
+                    </div>
+
+                    <p class="text-slate-300 text-xs font-bold uppercase tracking-widest mb-2">Audiobook Only</p>
+                    <div class="flex items-center justify-center gap-3 mb-1 flex-wrap">
+                        <span class="text-xl md:text-2xl text-slate-500 font-bold price-slash">$49.00</span>
+                        <span class="text-3xl md:text-4xl font-extrabold text-white">$43.89</span>
+                    </div>
+                    <p class="text-green-400 font-bold text-base mb-3">You Save $5.11 — Lifetime Access</p>
+
+                    <!-- Subtle feature list for decoy -->
+                    <ul class="text-left text-slate-300 text-xs space-y-1.5 mb-4 px-2">
+                        <li class="flex items-start gap-2"><span class="text-slate-500 mt-0.5">•</span> Audiobook access only</li>
+                        <li class="flex items-start gap-2"><span class="text-slate-500 mt-0.5">•</span> Listen on the go</li>
+                        <li class="flex items-start gap-2"><span class="text-slate-500 mt-0.5">•</span> Lifetime access</li>
+                    </ul>
+
+                    <a href="https://www.checkout-ds24.com/product/UPSELL_ID" class="cta-muted block w-full font-extrabold py-3.5 px-4 rounded-xl text-center text-sm md:text-base uppercase tracking-wide">
+                        ADD THE AUDIOBOOK ONLY
+                    </a>
+                    <div class="flex items-center justify-center gap-1.5 mt-3 text-slate-500 text-xs flex-wrap">
+                        <i class="fas fa-lock text-[10px]"></i>
+                        <span>256-bit SSL • 30-Day Guarantee • Secure</span>
+                    </div>
+                </div>
+
+                <!-- Recommended Card: Full System -->
+                <div class="pricing-card recommended-card">
+                    <!-- Hand-painted Flower with Butterfly 🦋🌺 -->
+                    <div class="flower-illustration">
+                        <svg width="85" height="72" viewBox="0 0 85 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Watercolor splatter behind -->
+                            <ellipse cx="38" cy="32" rx="32" ry="26" fill="#fca5a5" opacity="0.16" filter="blur(7px)"/>
+                            <ellipse cx="42" cy="28" rx="22" ry="18" fill="#fb7185" opacity="0.1" filter="blur(5px)"/>
+                            <!-- Stem -->
+                            <path d="M38 62 Q36 48 38 36" stroke="#7a9a5c" stroke-width="2.8" fill="none" stroke-linecap="round" opacity="0.7"/>
+                            <!-- Leaves -->
+                            <path d="M38 50 Q48 46 50 40" stroke="#7a9a5c" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.6"/>
+                            <path d="M38 46 Q28 42 25 36" stroke="#7a9a5c" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.55"/>
+                            <!-- Rose/Peony petals - outer layer -->
+                            <ellipse cx="38" cy="14" rx="14" ry="11" fill="#fecdd3" opacity="0.75" transform="rotate(0 38 14)"/>
+                            <ellipse cx="52" cy="22" rx="14" ry="11" fill="#fecdd3" opacity="0.7" transform="rotate(72 52 22)"/>
+                            <ellipse cx="46" cy="40" rx="14" ry="11" fill="#fecdd3" opacity="0.72" transform="rotate(144 46 40)"/>
+                            <ellipse cx="28" cy="40" rx="14" ry="11" fill="#fecdd3" opacity="0.7" transform="rotate(216 28 40)"/>
+                            <ellipse cx="24" cy="22" rx="14" ry="11" fill="#fecdd3" opacity="0.73" transform="rotate(288 24 22)"/>
+                            <!-- Inner petals -->
+                            <ellipse cx="38" cy="18" rx="9" ry="7.5" fill="#fb7185" opacity="0.8" transform="rotate(36 38 18)"/>
+                            <ellipse cx="45" cy="26" rx="9" ry="7.5" fill="#fb7185" opacity="0.75" transform="rotate(108 45 26)"/>
+                            <ellipse cx="38" cy="34" rx="9" ry="7.5" fill="#fb7185" opacity="0.78" transform="rotate(180 38 34)"/>
+                            <ellipse cx="30" cy="26" rx="9" ry="7.5" fill="#fb7185" opacity="0.76" transform="rotate(252 30 26)"/>
+                            <!-- Core -->
+                            <circle cx="38" cy="26" r="5" fill="#e11d48" opacity="0.7"/>
+                            <circle cx="38" cy="26" r="3" fill="#be123c" opacity="0.6"/>
+                            <!-- Hand-painted petal veins -->
+                            <path d="M38 8 Q38 14 38 18" stroke="#e8a0b0" stroke-width="1" fill="none" opacity="0.5"/>
+                            <path d="M50 16 Q48 22 45 26" stroke="#e8a0b0" stroke-width="0.9" fill="none" opacity="0.45"/>
+                            <path d="M46 38 Q42 36 38 34" stroke="#e8a0b0" stroke-width="0.9" fill="none" opacity="0.45"/>
+
+                            <!-- Butterfly 🦋 perched on right petal -->
+                            <g transform="translate(52, 14) rotate(-15)">
+                                <!-- Left wing upper -->
+                                <ellipse cx="-4" cy="-3" rx="6" ry="5" fill="#fde68a" opacity="0.75" transform="rotate(-10 -4 -3)"/>
+                                <ellipse cx="-4" cy="-3" rx="4.5" ry="3.5" fill="#fbbf24" opacity="0.6" transform="rotate(-10 -4 -3)"/>
+                                <path d="M-6 -5 Q-4 -8 -1 -5" stroke="#b45309" stroke-width="0.6" fill="none" opacity="0.5"/>
+                                <!-- Right wing upper -->
+                                <ellipse cx="5" cy="-3" rx="6" ry="5" fill="#fde68a" opacity="0.75" transform="rotate(10 5 -3)"/>
+                                <ellipse cx="5" cy="-3" rx="4.5" ry="3.5" fill="#fbbf24" opacity="0.6" transform="rotate(10 5 -3)"/>
+                                <path d="M7 -5 Q5 -8 2 -5" stroke="#b45309" stroke-width="0.6" fill="none" opacity="0.5"/>
+                                <!-- Left wing lower -->
+                                <ellipse cx="-3" cy="2" rx="4" ry="3.5" fill="#fde68a" opacity="0.7" transform="rotate(-5 -3 2)"/>
+                                <ellipse cx="-3" cy="2" rx="3" ry="2.5" fill="#fcd34d" opacity="0.55" transform="rotate(-5 -3 2)"/>
+                                <!-- Right wing lower -->
+                                <ellipse cx="4" cy="2" rx="4" ry="3.5" fill="#fde68a" opacity="0.7" transform="rotate(5 4 2)"/>
+                                <ellipse cx="4" cy="2" rx="3" ry="2.5" fill="#fcd34d" opacity="0.55" transform="rotate(5 4 2)"/>
+                                <!-- Body -->
+                                <ellipse cx="0.5" cy="0" rx="1.5" ry="4" fill="#78350f" opacity="0.8"/>
+                                <!-- Antennae -->
+                                <path d="M0.5 -3.5 Q-2 -7 -3.5 -9" stroke="#78350f" stroke-width="0.7" fill="none" opacity="0.7"/>
+                                <path d="M0.5 -3.5 Q3 -7 4.5 -9" stroke="#78350f" stroke-width="0.7" fill="none" opacity="0.7"/>
+                                <circle cx="-3.5" cy="-9" r="0.8" fill="#78350f" opacity="0.6"/>
+                                <circle cx="4.5" cy="-9" r="0.8" fill="#78350f" opacity="0.6"/>
+                                <!-- Wing spots -->
+                                <circle cx="-3" cy="-3" r="1.2" fill="#b45309" opacity="0.4"/>
+                                <circle cx="4" cy="-3" r="1.2" fill="#b45309" opacity="0.4"/>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Recommended badge -->
+                    <span class="badge-recommended">✨ Most Popular</span>
+
+                    <p class="text-rose-200 text-xs font-bold uppercase tracking-widest mb-2">Total System Value</p>
+                    <div class="flex items-center justify-center gap-3 mb-1 flex-wrap">
+                        <span class="text-xl md:text-2xl text-slate-400 font-bold price-slash">$146.99</span>
+                        <span class="text-3xl md:text-4xl font-extrabold text-white">$39.07</span>
+                    </div>
+                    <p class="text-green-400 font-bold text-base mb-3">You Save $107.92 — Lifetime Access</p>
+
+                    <!-- Feature list for recommended -->
+                    <ul class="text-left text-rose-100 text-xs space-y-1.5 mb-4 px-2">
+                        <li class="flex items-start gap-2"><span class="text-rose-400 mt-0.5">✓</span> Audiobook + AI Expert</li>
+                        <li class="flex items-start gap-2"><span class="text-rose-400 mt-0.5">✓</span> Instant answers in brainfog</li>
+                        <li class="flex items-start gap-2"><span class="text-rose-400 mt-0.5">✓</span> Lifetime access to both</li>
+                        <li class="flex items-start gap-2"><span class="text-rose-400 mt-0.5">✓</span> Best value — save $107.92</li>
+                    </ul>
+
+                    <div class="bg-red-500/20 border border-red-500/50 rounded-lg p-2.5 mb-4 mt-1">
+                        <p class="text-red-200 text-xs font-bold">
+                            <i class="fas fa-exclamation-triangle mr-1.5"></i>
+                            You'll never see this offer again
+                        </p>
+                    </div>
+                    <a href="https://www.checkout-ds24.com/product/UPSELL_ID" class="cta-warm block w-full font-extrabold py-3.5 px-4 rounded-xl text-center text-sm md:text-base uppercase tracking-wide">
+                        YES! ADD THE AUDIOBOOK + Ai EXPERT
+                    </a>
+                    <div class="flex items-center justify-center gap-1.5 mt-3 text-rose-300 text-xs flex-wrap">
+                        <i class="fas fa-lock text-[10px]"></i>
+                        <span>256-bit SSL • 30-Day Guarantee • Secure</span>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Subtle scroll hint for mobile -->
+            <p class="text-center text-slate-400 text-xs mt-2 md:hidden flex items-center justify-center gap-1.5">
+                <i class="fas fa-chevron-left text-[10px]"></i>
+                <span>Swipe to compare</span>
+                <i class="fas fa-chevron-right text-[10px]"></i>
             </p>
         </div>
 
-        <!-- Price & CTA -->
-        <div class="bg-slate-900 rounded-2xl p-6 md:p-8 text-center shadow-2xl mb-8">
-            <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">Total System Value</p>
-            
-            <div class="flex items-center justify-center gap-4 mb-2">
-                <span class="text-2xl md:text-3xl text-slate-500 font-bold price-slash">$146.99</span>
-                <span class="text-4xl md:text-5xl font-extrabold text-white">$43.07</span>
-            </div>
-            
-            <p class="text-green-400 font-bold text-lg mb-2">You Save $103.92 — Lifetime Access</p>
-            
-            <div class="bg-red-500/20 border border-red-500/50 rounded-lg p-3 mb-6 mt-4">
-                <p class="text-red-200 text-sm font-bold">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                    You'll never see this offer again
-                </p>
-            </div>
-
-            <!-- TODO: Replace href with your Digistore24 upsell checkout URL -->
-            <a href="https://www.checkout-ds24.com/product/UPSELL_ID" class="cta-red block w-full font-extrabold py-4 px-6 rounded-xl text-center text-lg md:text-xl uppercase tracking-wide">
-                YES! ADD THE AUDIOBOOK + Ai EXPERT TO MY CART
-            </a>
-            
-            <div class="flex items-center justify-center gap-2 mt-4 text-slate-400 text-xs">
-                <i class="fas fa-lock"></i>
-                <span>256-bit SSL Encryption • 30-Day Money-Back Guarantee • Private & Secure</span>
-            </div>
-        </div>
-
         <!-- Guarantee -->
-        <div class="text-center mb-10">
-            <div class="flex justify-center items-center space-x-3 mb-4">
-                <img src="mastercard.svg" alt="Mastercard" class="h-8">
-                <img src="visa.svg" alt="Visa" class="h-8">
-                <img src="applepay.svg" alt="Apple Pay" class="h-8">
-                <img src="paypal.svg" alt="PayPal" class="h-8">
+        <div class="text-center mb-10 section-fade guarantee-warm py-6 px-4">
+            <div class="flex justify-center items-center space-x-3 mb-4 flex-wrap gap-y-2">
+                <img src="mastercard.svg" alt="Mastercard" class="h-16 w-auto">
+                <img src="visa.svg" alt="Visa" class="h-32 w-auto">
+                <img src="applepay.svg" alt="Apple Pay" class="h-32 w-auto">
+                <img src="paypal.svg" alt="PayPal" class="h-16 w-auto">
             </div>
             <div class="inline-flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-bold mb-3">
                 <i class="fas fa-shield-alt mr-2"></i> 30-Day Risk-Free Guarantee
             </div>
-            <p class="text-slate-600 text-sm max-w-md mx-auto leading-relaxed">
-                Don't Let Temporary Hormonal Changes Cost You Permanent Career Ground.
+            <p class="text-slate-600 text-xl md:text-2xl font-bold max-w-md mx-auto leading-relaxed font-display italic">
+                &ldquo;Don't Let Temporary Hormonal Changes Cost You Permanent Career Ground.&rdquo;
             </p>
         </div>
 
@@ -207,6 +558,31 @@
         </div>
 
     </div>
+
+    <!-- Subtle script to ensure proper scroll positioning on mobile -->
+    <script>
+        (function() {
+            const scrollContainer = document.getElementById('pricingScrollContainer');
+            if (!scrollContainer) return;
+            // On mobile, ensure the recommended card gets initial attention by scrolling slightly
+            if (window.innerWidth < 768) {
+                // Small delay to let layout settle
+                setTimeout(function() {
+                    const recommendedCard = scrollContainer.querySelector('.recommended-card');
+                    if (recommendedCard) {
+                        const containerWidth = scrollContainer.offsetWidth;
+                        const cardLeft = recommendedCard.offsetLeft;
+                        const cardWidth = recommendedCard.offsetWidth;
+                        // Scroll so the recommended card is centered
+                        scrollContainer.scrollTo({
+                            left: cardLeft - (containerWidth - cardWidth) / 2,
+                            behavior: 'smooth'
+                        });
+                    }
+                }, 400);
+            }
+        })();
+    </script>
 
 </body>
 </html>
